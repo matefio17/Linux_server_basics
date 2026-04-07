@@ -41,11 +41,9 @@ Konfiguracja bezpiecznego serwera WWW, zarządzanie dostępem SSH oraz symulacja
 
 ## 📚 Czego się nauczyłem?
 
-- Bezpieczeństwo i Zarządzanie Kodem (Git/Security)
-Zarządzanie bezpieczeństwem repozytorium: Praktyczne wykorzystanie .gitignore do filtrowania wrażliwych danych (klucze prywatne SSH) i plików tymczasowych systemu operacyjnego.
+- Zarządzanie bezpieczeństwem repozytorium: Praktyczne wykorzystanie .gitignore do filtrowania wrażliwych danych (klucze prywatne SSH) i plików tymczasowych systemu operacyjnego.
 
-- Wirtualizacja i Sieci (Virtualization & Networking)
-Konfiguracja kart sieciowych w VM: Zrozumienie różnicy między trybem NAT (izolacja) a Bridged Adapter (serwer jako pełnoprawny host w sieci lokalnej).
+- Konfiguracja kart sieciowych w VM: Zrozumienie różnicy między trybem NAT (izolacja) a Bridged Adapter (serwer jako pełnoprawny host w sieci lokalnej).
 
 - Diagnostyka sieciowa CLI: Interpretacja wyników komendy ip a i identyfikacja adresów IPv4 w interfejsach sieciowych Linuxa.
 
