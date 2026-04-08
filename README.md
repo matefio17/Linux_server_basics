@@ -85,7 +85,7 @@ Zainstalowałem VirtualBox i stworzyłem maszynę wirtualną z Ubuntu Server 22.
 
 Czego się nauczyłem: 
 
-- Dlaczego do mojego projektu lepszy będzie tryb Bridged, który daje serwerowi własny adres IP zamiast domyślnego dla VirtualBox NAT, który adres IP maszyny za adresem komputera.
+- Dlaczego do mojego projektu lepszy będzie tryb Bridged, który daje serwerowi własny adres IP zamiast domyślnego dla VirtualBox NAT, który chowa adres IP maszyny za adresem komputera.
   
 
 
