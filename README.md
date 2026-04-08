@@ -1,58 +1,106 @@
 # README
 
-# 🐧 Projekt: Linux Server Basics (Ubuntu Server 22.04)
+# 🐧 Projekt: Linux Server Basics (Ubuntu Server 22.04) - samodzielna nauka administracji Linux.
 
-## 🎯 Cel projektu
+## 📋 Spis treści
+ 
+- [Problem](#-problem)
+- [Rozwiązanie](#-rozwiązanie)
+- [Technologie i narzędzia](#-technologie-i-narzędzia)
+- [Struktura projektu](#-struktura-projektu)
 
-Konfiguracja bezpiecznego serwera WWW, zarządzanie dostępem SSH oraz symulacja i rozwiązywanie realnych problemów typu Helpdesk (L1/L2).
+## 🎯 Problem
+ 
+Chciałem zdobyć praktyczne doświadczenie z administracją Linux, które można pokazać na rozmowie kwalifikacyjnej. Kursy wideo i tutoriale dawały wiedzę teoretyczną, ale nie uczyły jak reagować gdy coś się psuje. Postanowiłem zbudować projekt który:
+ 
+- wymusza samodzielne rozwiązywanie problemów zamiast kopiowania komend,
+- symuluje realne scenariusze z pracy helpdesk (usługa nie działa, brak uprawnień, pełny dysk),
+- kończy się udokumentowanym portfolio
 
-## 🛠️ Stack Technologiczny
+## ✅ Rozwiązanie
+ 
+Postawiłem własny serwer Ubuntu Server 22.04 LTS w VirtualBox
 
-- **System:** Ubuntu Server 22.04 LTS (VM VirtualBox)
-- **Web Server:** Nginx
-- **Security:** OpenSSH (Klucze RSA), UFW Firewall
-- **Narzędzia:** systemd, journalctl, chmod/chown
-
-## 🚀 Kluczowe Etapy Realizacji
-
-### 1. Hardening SSH
-
-- [ ]  Generowanie pary kluczy (publiczny/prywatny).
-- [ ]  Wyłączenie logowania hasłem (bezpieczeństwo przed Brute Force).
-- [ ]  *Screenshot: Logowanie kluczem z hosta.*
-
-### 2. Serwer WWW i Uprawnienia
-
-- [ ]  Instalacja Nginx i konfiguracja `index.html`.
-- [ ]  Zarządzanie grupami: stworzenie użytkownika `jankowalski` i nadanie uprawnień do `/var/www/html`.
-- [ ]  *Screenshot: Działająca strona w przeglądarce.*
-
-### 3. Bezpieczeństwo Sieciowe (UFW)
-
-- [ ]  Konfiguracja firewalla (blokada wszystkiego poza SSH i HTTP).
-- [ ]  *Screenshot: Wynik komendy ufw status.*
-
-## 🛠️ Scenariusze Helpdesk (Case Studies)
-
-| Problem | Diagnoza | Rozwiązanie |
-| --- | --- | --- |
-|  |  |  |
-|  |  |  |
-
-## 📚 Czego się nauczyłem?
-
-- Zarządzanie bezpieczeństwem repozytorium: Praktyczne wykorzystanie .gitignore do filtrowania wrażliwych danych (klucze prywatne SSH) i plików tymczasowych systemu operacyjnego.
-
-- Konfiguracja kart sieciowych w VM: Zrozumienie różnicy między trybem NAT (izolacja) a Bridged Adapter (serwer jako pełnoprawny host w sieci lokalnej).
-
-- Diagnostyka sieciowa CLI: Interpretacja wyników komendy ip a i identyfikacja adresów IPv4 w interfejsach sieciowych Linuxa.
-
-- Edycja plików w terminalu: Sprawne poruszanie się w edytorze Nano (skróty klawiszowe, zapisywanie, buforowanie zmian).
+## 🛠️ Technologie i narzędzia
+ 
+| Kategoria | Narzędzie | Do czego użyte |
+|-----------|-----------|----------------|
+| System | Ubuntu Server 22.04 LTS | System operacyjny serwera |
+| Wirtualizacja | VirtualBox | Środowisko uruchomieniowe |
+| Dostęp zdalny | OpenSSH | Zarządzanie serwerem z laptopa |
+| Serwer WWW | Nginx | Serwowanie strony HTML |
+| Firewall | UFW (iptables) | Ograniczenie ruchu sieciowego |
+| Zarządzanie usługami | systemd | Kontrola i monitoring usług |
+| Automatyzacja | crontab | Zadania cykliczne |
+| Bezpieczeństwo | fail2ban | Ochrona przed brute-force |
+| Dokumentacja | Git + GitHub | Kontrola wersji i portfolio |
+ 
+---
+ 
+## 📁 Struktura projektu
+ 
+```
+.
+├── README.md                    # Ten plik
+├── .gitignore                   # Wykluczenia (klucze prywatne, logi)
+├── configs/
+│   ├── nginx.conf               # Konfiguracja serwera WWW
+│   ├── sshd_config              # Konfiguracja serwera SSH (oczyszczona)
+│   └── ufw_rules.txt            # Zrzut aktywnych reguł firewalla
+├── scripts/
+│   ├── log_date.sh              # Skrypt uruchamiany przez crontab
+│   └── setup_user.sh            # Skrypt dodający użytkownika z sudo
+├── docs/
+│   ├── troubleshooting.md       # Udokumentowane scenariusze helpdesk
+│   ├── cheatsheet.md            # Komendy pogrupowane tematycznie
+│   └── screenshots/
+│       ├── htop-zasoby.png
+│       ├── ssh-bez-hasla.png
+│       ├── nginx-strona-glowna.png
+│       ├── nginx-wlasna-strona.png
+│       ├── ufw-status.png
+│       ├── ls-uprawnienia.png
+│       ├── ssh-hardening-blad-hasla.png
+│       ├── scenariusz-nginx-stopped.png
+│       ├── scenariusz-nginx-naprawiony.png
+│       ├── scenariusz-403-blad.png
+│       ├── scenariusz-403-naprawiony.png
+│       ├── ssh-timeout.png
+│       └── ssh-refused.png
+└── LICENSE
+```
 
 ---
+
+## 📅 Tydzień 1 – Fundamenty i SSH
+ 
+**Cel:** Postawić serwer i zarządzać nim zdalnie bez wpisywania hasła.
+
+
+
+## 📅 Tydzień 2 – Nginx, Użytkownicy i Firewall
+ 
+**Cel:** Serwer serwuje stronę WWW, dostęp ograniczony firewallem.
+
+
+## 📅 Tydzień 3 – Scenariusze Helpdesk
+ 
+**Cel:** Symulacja realnych problemów — metodyczne diagnozowanie i naprawianie.
+ 
+> Pełna dokumentacja wszystkich scenariuszy: [docs/troubleshooting.md](docs/troubleshooting.md)
+
+
+## 🔄 Co zrobiłbym inaczej
+
+
+## 🚀 Wnioski i co dalej
+
+
+## 📚 Zasoby które były pomocne
+
 
 ## **👨‍💻** Autor
 
 ---
 
-**matefio17 -** Projekt zrealizowany w ramach praktycznej nauki i stanowi część portfolio
+**Mateusz Markiewicz -** Projekt zrealizowany w ramach praktycznej nauki i stanowi część portfolio
