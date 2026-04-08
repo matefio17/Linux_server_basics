@@ -79,7 +79,7 @@ Postawiłem własny serwer Ubuntu Server 22.04 LTS w VirtualBox
 Dzień 1 – Maszyna wirtualna
 Zainstalowałem VirtualBox i stworzyłem maszynę wirtualną z Ubuntu Server 22.04 LTS. Wybrałem tryb sieci Bridged żeby serwer był widoczny w sieci domowej jako osobne urządzenie z własnym adresem IP.
 
-> [docs/screenshots/htop-zasoby.png]
+> [docs/screenshots/htop-zasoby.png](docs/screenshots/htop-zasoby.png)
 
 Świeżo uruchomiony serwer zużywa blisko 200 MB RAM — reszta dostępna dla usług
 
