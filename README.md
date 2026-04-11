@@ -86,7 +86,39 @@ Zainstalowałem VirtualBox i stworzyłem maszynę wirtualną z Ubuntu Server 22.
 Czego się nauczyłem: 
 
 - Dlaczego do mojego projektu lepszy będzie tryb Bridged, który daje serwerowi własny adres IP zamiast domyślnego dla VirtualBox NAT, który chowa adres IP maszyny za adresem komputera.
+
   
+
+Dzień 2 – Instalacja i zabezpieczenie fundamentów
+
+Finalizacja instalacji i pierwsze logowanie – system jest "czysty", ale wymaga aktualizacji i konfiguracji uprawnień.
+
+Czego się nauczyłem:
+
+- Zarządzanie pakietami (APT): Poznałem różnicę między `sudo apt update`(pobieranie list pakietów z serwera) a `sudo apt upgrade` (instalacja najnowszych wersji zainstalowanych programów wraz z łatkami bezpieczeństwa)
+
+- Bezpieczeństwo uprawnień (sudo vs root): Warto unikać administracji systemem z poziomu konta root. Root może wszystko wię bardzo łatwo coś zepsuć.
+
+
+
+Dzień 3 - Pierwsze połączenie SSH
+
+Skonfigurowałem połączenie między moim komputerem (klientem) a maszyną wirtualną (serwerem), co jest kluczowym krokiem w pracy administratora – w realnych warunkach serwery rzadko posiadają podpięty monitor.
+
+> [docs/screenshots/ssh-bez-hasla.png](docs/screenshots/ssh-bez-hasla.png)
+
+Poprawne zalogowanie przez SSH: widoczny komunikat o dodaniu hosta do listy zaufanych oraz wynik komend weryfikujących tożsamość serwera.
+
+Czego się nauczyłem:
+
+- SSH dzięki silnemu szyfrowaniu zapewnia bezpieczne połączenie, które nawet gdy zostanie przechwycone nie będzie możliwe do odczytania
+
+- Ustaliłem adres IP serwera (10.65.0.57). Tryb bridge w maszynie wirtualnej zapewniił to, że mój serwer prosi DHCP w sieci o przydzielenie konfiguracji sieciowej tak samo jak robią to inne urządzenia.
+
+- Przy pierwszym logowaniu zatwierdziłem fingerprint serwera. Jest to unikalny ciąg znaków, który umożliwia identyfikację serwera. Taki mechanizm przydaje się przy zapomieganiu atakom MITM, gdy ktoś podszywa się pod serwer.
+
+- Rozróżniam klienta SSH (mój komputer) od serwera SSH (usługa w moim serwerze z którą się łączę)
+
 
 
 ## 📅 Tydzień 2 – Nginx, Użytkownicy i Firewall
