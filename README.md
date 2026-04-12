@@ -55,6 +55,7 @@ Postawiłem własny serwer Ubuntu Server 22.04 LTS w VirtualBox
 │   ├── cheatsheet.md            # Komendy pogrupowane tematycznie
 │   └── screenshots/
 │       ├── htop-zasoby.png
+│       ├── ssh.png
 │       ├── ssh-bez-hasla.png
 │       ├── nginx-strona-glowna.png
 │       ├── nginx-wlasna-strona.png
