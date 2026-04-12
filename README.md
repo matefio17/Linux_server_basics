@@ -97,7 +97,7 @@ Czego się nauczyłem:
 
 - Zarządzanie pakietami (APT): Poznałem różnicę między `sudo apt update`(pobieranie list pakietów z serwera) a `sudo apt upgrade` (instalacja najnowszych wersji zainstalowanych programów wraz z łatkami bezpieczeństwa)
 
-- Bezpieczeństwo uprawnień (sudo vs root): Warto unikać administracji systemem z poziomu konta root. Root może wszystko wię bardzo łatwo coś zepsuć.
+- Bezpieczeństwo uprawnień (sudo vs root): Warto unikać administracji systemem z poziomu konta root. Root może wszystko więc bardzo łatwo coś zepsuć. Warto wspomnieć także, że korzystając z konta root w logach nie będzie widać kto dokonał zmiany lub użył danej komendy - w przeciwieństwie do sudo.
 
 
 
@@ -113,9 +113,9 @@ Czego się nauczyłem:
 
 - SSH dzięki silnemu szyfrowaniu zapewnia bezpieczne połączenie, które nawet gdy zostanie przechwycone nie będzie możliwe do odczytania
 
-- Ustaliłem adres IP serwera (10.65.0.57). Tryb bridge w maszynie wirtualnej zapewniił to, że mój serwer prosi DHCP w sieci o przydzielenie konfiguracji sieciowej tak samo jak robią to inne urządzenia.
+- Ustaliłem adres IP serwera (10.65.0.57). Tryb bridge w maszynie wirtualnej zapewnił to, że mój serwer prosi DHCP w sieci o przydzielenie konfiguracji sieciowej tak samo jak robią to inne urządzenia.
 
-- Przy pierwszym logowaniu zatwierdziłem fingerprint serwera. Jest to unikalny ciąg znaków, który umożliwia identyfikację serwera. Taki mechanizm przydaje się przy zapomieganiu atakom MITM, gdy ktoś podszywa się pod serwer.
+- Przy pierwszym logowaniu zatwierdziłem fingerprint serwera. Jest to unikalny ciąg znaków, który umożliwia identyfikację serwera. Taki mechanizm przydaje się przy zapobieganiu atakom MITM, gdy ktoś podszywa się pod serwer.
 
 - Rozróżniam klienta SSH (mój komputer) od serwera SSH (usługa w moim serwerze z którą się łączę)
 
