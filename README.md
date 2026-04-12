@@ -105,7 +105,7 @@ Dzień 3 - Pierwsze połączenie SSH
 
 Skonfigurowałem połączenie między moim komputerem (klientem) a maszyną wirtualną (serwerem), co jest kluczowym krokiem w pracy administratora – w realnych warunkach serwery rzadko posiadają podpięty monitor.
 
-> [docs/screenshots/ssh-bez-hasla.png](docs/screenshots/ssh-bez-hasla.png)
+> [docs/screenshots/ssh.png](docs/screenshots/ssh.png)
 
 Poprawne zalogowanie przez SSH: widoczny komunikat o dodaniu hosta do listy zaufanych oraz wynik komend weryfikujących tożsamość serwera.
 
