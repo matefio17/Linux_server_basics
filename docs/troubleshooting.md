@@ -198,24 +198,28 @@
 
 ## Problemy napotkane przy okazji
 
-> Błędy które napotkałem poza zaplanowanymi scenariuszami. Najbardziej autentyczna część dokumentacji.
+> Błędy które napotkałem poza zaplanowanymi scenariuszami. 
 
 ---
 
-### Problem: [krótki opis]
+### Problem: Serwer traci dostępność pod dotychczasowym adresem IP po restarcie usługi sieciowej lub odświeżeniu dzierżawy DHCP przez router nadrzędny (akademicki).
 
 **Kiedy wystąpił:**
-**Komunikat błędu:**
-```
+Podczas kolejnej próby ustanowienia połączenia SSH
 
-```
 **Przyczyna:**
+Niezarządzalna sieć akademicka. Brak uprawnień administratora do utworzenia rezerwacji.
 
 **Rozwiązanie:**
-```bash
-
-```
+  1.  Wdrożenie własnego routera TP-Link TL-WR844N.
+  2.  Konfiguracja trybu WISP (Wireless ISP) w celu pobierania internetu z Wi-Fi akademickiego i udostępniania go w odizolowanej sieci LAN.
+  3.  Konfiguracja DHCP Reservation: powiązanie MAC adresu VM ze stałym IP `192.168.0.105`.
+  4.  Higiena bezpieczeństwa: Wyczyszczenie nieaktualnych wpisów w ~/.ssh/known_hosts
+  5.  Weryfikacja: ponowne uruchomienie VM i potwierdzenie, że adres IP pozostaje stały oraz połączenie SSH działa bez zmian.
+     
 **Wniosek:**
+
+Stosowanie stałej konfiguracji IP w przypadku serwerów, zwłaszcza tych które oferują usługi jest kluczowe dla ciągłości biznesowej. W środowisku labowym bardzo łatwo zlekceważyć ten problem i stosować tzw. "workarounds" np. poprzez każdorazowe weryfikowanie nowego adresu i aktualizowanie komendy do połączeń SSH. W środowisku korporacyjnym, gdzie z usług serwera korzysta wielu użytkowników, takie obejścia są niedopuszczalne dlatego zależy mi żeby od samego początku nauki administracji stawiać na dobre praktyki.
 
 ---
 
