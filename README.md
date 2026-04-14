@@ -28,6 +28,7 @@ Postawiłem własny serwer Ubuntu Server 22.04 LTS w VirtualBox
 | System | Ubuntu Server 22.04 LTS | System operacyjny serwera |
 | Wirtualizacja | VirtualBox | Środowisko uruchomieniowe |
 | Dostęp zdalny | OpenSSH | Zarządzanie serwerem z laptopa |
+| DHCP Reservation | Router TP-Link TL-WR844N | Stały adres IP serwera |
 | Serwer WWW | Nginx | Serwowanie strony HTML |
 | Firewall | UFW (iptables) | Ograniczenie ruchu sieciowego |
 | Zarządzanie usługami | systemd | Kontrola i monitoring usług |
@@ -57,6 +58,7 @@ Postawiłem własny serwer Ubuntu Server 22.04 LTS w VirtualBox
 │       ├── htop-zasoby.png
 │       ├── ssh.png
 │       ├── ssh-bez-hasla.png
+│       ├── dhcp-reservation.png
 │       ├── nginx-strona-glowna.png
 │       ├── nginx-wlasna-strona.png
 │       ├── ufw-status.png
@@ -134,7 +136,7 @@ Użyłem komendy `ssh-keygen -t ed25519`. Wybrałemn algorytm ed25519 ze względ
 
 ⚠️ Początkowo wygenerowałem klucze już po zalogowaniu na serwer. Szybko zorientowałem się, że to błąd, ponieważ klucz prywatny musi pozostać na maszynie klienckiej. Poprawiłem architekturę dostępu, generując nową parę lokalnie i usunałem klucze z serwera.
 
-⚠️ Podczas próby kopiowania klucza publicznego na serwer napotkałem na problem - komenda `ssh-copy-id` nie jest natywnie dostępne w PowerShellu z którego korzystam na maszynie klienckiej. Wobec powyższego zdecyodwałem się skopiować go ręcznie wykorzystując program `nano`. Szczegóły:
+⚠️ Podczas próby kopiowania klucza publicznego na serwer napotkałem na problem - komenda `ssh-copy-id` nie jest natywnie dostępne w PowerShellu z którego korzystam na maszynie klienckiej. Wobec powyższego zdecydowałem się skopiować go ręcznie wykorzystując program `nano`. Szczegóły:
 
 > [docs/troubleshooting.md](docs/troubleshooting.md)
 
@@ -164,11 +166,34 @@ Czego się nauczyłem:
 
 - Transfer klucza: Z powodu problemów z `ssh-copy-id`, ręcznie skopiowałem klucz przy pomocy `nano`. Dzięki temu nauczyłem się z czego składa się taki klucz i że sama treść kryptograficzna to tylko jego część. 
 
-- Bezpieczeństwo plików: Dowiedziałem się, że folder .ssh i plik authorized_keys muszą mieć restrykcyjne uprawnienia (600 - rw), inaczej serwer ze względów bezpieczeństwa zignoruje klucz.
-- 
+- Bezpieczeństwo plików: Dowiedziałem się, że folder .ssh i plik authorized_keys muszą mieć restrykcyjne uprawnienia (600 - rw), inaczej serwer ze względów bezpieczeństwa zignoruje klucz. 
 
 - Zapobieganie atakom brute-force: Przy pomocy `nano` wyłączyłem uwierzytelnianie hasłem w `/etc/ssh/sshd_config`. Nieużywanie hasła znacząco ogranicza zakres ataków takich jak brute-force.
-- 
+
+  ---
+
+Dzień 5 - DHCP Reservation - Rozwiązanie problemu z brakiem stałego adresu IP serwera
+
+Dzisiejszym celem było skonfigurowanie urządzenia brzegowego (router TP-Link TL-WR844N), tak aby serwer otrzymywał stałą dzierżawę adresu `192.168.0.105` oraz aby odizolować serwer od niezarządzalnej sieci akademickiej. 
+
+[docs/screenshots/dhcp-reservation.png](docs/screenshots/dhcp-reservation.png)
+
+Dodatkowo postanowiłem, że zarówno serwer jak i maszyna kliencka będą połączone z TL-WR844N, dzięki czemu uzyskam bezpieczne odizolowane środowisko testowe.
+
+Gdy problem został rozwiązany, postanowiłem dodatkowo oczyścić plik `~/.ssh/known_hosts` z nieaktualej zawartości. 
+
+Czego się nauczyłem:
+
+- Konflikty DHCP: Doświadczyłem w praktyce, że zmiana konfiguracji DHCP po stronie routera wymaga odświeżenia dzierżawy co najszybciej osiągnałem poprzez reboot serwera. Przekonałem się o tym gdy mimo ustawienia dzierżawy nie mogłem ustanowić połączenia przez SSH.
+
+- Zarządzanie plikiem `known_hosts`: Dowiedziałem się, że czyszczenie nieaktualnych wpisów tożsamości serwerów to dobra praktyka pozwalająca utrzymać higienę pracy gdy serwer zmienia swoją konfigurację sieciową.
+
+---
+
+
+
+
+
 
 ## 📅 Tydzień 2 – Nginx, Użytkownicy i Firewall
  
