@@ -53,7 +53,6 @@ Postawiłem własny serwer Ubuntu Server 22.04 LTS w VirtualBox
 │   └── setup_user.sh            # Skrypt dodający użytkownika z sudo
 ├── docs/
 │   ├── troubleshooting.md       # Udokumentowane scenariusze helpdesk
-│   ├── cheatsheet.md            # Komendy pogrupowane tematycznie
 │   └── screenshots/
 │       ├── htop-zasoby.png
 │       ├── ssh.png
@@ -75,7 +74,7 @@ Postawiłem własny serwer Ubuntu Server 22.04 LTS w VirtualBox
 
 ---
 
-## 📅 Tydzień 1 – Fundamenty i SSH
+## 📅 Etap 1 – Fundamenty i SSH
  
 **Cel:** Postawić serwer i zarządzać nim zdalnie bez wpisywania hasła.
 
@@ -190,18 +189,41 @@ Czego się nauczyłem:
 
 ---
 
-
-
-
-
-
-## 📅 Tydzień 2 – Nginx, Użytkownicy i Firewall
+## 📅 Etap 2 – Nginx, Użytkownicy i Firewall
  
 **Cel:** Serwer serwuje stronę WWW, dostęp ograniczony firewallem.
 
+Mając stabilne połączenie i stałe IP, przechodzę do Etapu 2: Web Server (Nginx) oraz zabezpieczenie brzegu sieci (UFW).
 
 
-## 📅 Tydzień 3 – Scenariusze Helpdesk
+Dzień 6 - Nginx i zarządzanie usługami przez `systemd`
+
+Dzisiaj skupiłem się na uruchomieniu pierwszej usługi serwerowej. Moim zadaniem było sprawienie, by serwer zaczął odpowiadać na zapytania HTTP.
+
+>[docs/screenshots/nginx-strona-glowna.png](docs/screenshots/nginx-strona-glowna.png)
+
+
+Czego się nauczyłem:
+
+- Instalacja: Do instalacji usługi użyłem komendy `sudo apt install nginx`. Następnie z wykorzystaniem `htop` zweryfikowałem, że procesy nginx master oraz nginx worker działają. Finalnie z wykorzystaniem przeglądarki przeszedłem pod adres http://192.168.0.105 gdzie wyświetliła mi się wiadomość o poprawnej instalacji usługi. 
+
+- Weryfikacja: Aby dodatkowo sprawdzić czy usługa funkcjonuje zgodnie z oczekiwaniami użyłem komendy `sudo systemctl status nginx`. Znalazłem tam informacje o usłudze takie jak pełne drzewko procesów. Dowiedziałem się także, że status active oznacza że usługa działa w tym momencie natomiast status enabled oznacza, że usługa jest ustawiona na autostart. Dodatkowo zweryfikowałem to komendą `sudo systemctl is-enabled nginx`.  
+
+- Porty i nasłuchiwanie: Dowiedziałem się, że Nginx domyślnie działa na porcie 80, co dodatkowo sprawdziłem poleceniem `sudo lsof -i | grep nginx`. Dzięki temu zweryfikowałem wszystkie połączenia sieciowe związane ze sformułowaniem `nginx`
+
+- Logi `/var/log/nginx/` - Dowiedziałem się, że Nginx generuje dwa rodzaje logów - `access.log` - czyli szczegółowe informacje o wszystkich zapytaniach HTTP, oraz `error.log` - przydatne w troubleshootingu.
+
+- Architektura Nginx: Odnalazłem kod strony powitalnej w `/var/www/html/index.nginx-debian.html`. Jest to plik, który będę edytować w kolejnych krokach aby zmienić wygląd strony.
+
+---
+
+
+
+
+
+
+
+## 📅 Etap 3 – Scenariusze Helpdesk
  
 **Cel:** Symulacja realnych problemów — metodyczne diagnozowanie i naprawianie.
  
