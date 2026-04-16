@@ -131,11 +131,11 @@ Dzisiejszym celem było wyeliminowanie konieczności wpisywania hasła przy każ
 
 Logowanie bez hasła: Serwer automatycznie rozpoznaje mój klucz prywatny i wpuszcza mnie do systemu w ułamku sekundy. 
 
-Użyłem komendy `ssh-keygen -t ed25519`. Wybrałemn algorytm ed25519 ze względu na jego wydajność i bezpieczeństwo. Upewniłem się, że klucze są w `~/.ssh/`.
+Użyłem komendy `ssh-keygen -t ed25519`. Wybrałem algorytm ed25519 ze względu na jego wydajność i bezpieczeństwo. Upewniłem się, że klucze są w `~/.ssh/`.
 
-⚠️ Początkowo wygenerowałem klucze już po zalogowaniu na serwer. Szybko zorientowałem się, że to błąd, ponieważ klucz prywatny musi pozostać na maszynie klienckiej. Poprawiłem architekturę dostępu, generując nową parę lokalnie i usunałem klucze z serwera.
+⚠️ Początkowo wygenerowałem klucze już po zalogowaniu na serwer. Szybko zorientowałem się, że to błąd, ponieważ klucz prywatny musi pozostać na maszynie klienckiej. Poprawiłem architekturę dostępu, generując nową parę lokalnie i usunąłem klucze z serwera.
 
-⚠️ Podczas próby kopiowania klucza publicznego na serwer napotkałem na problem - komenda `ssh-copy-id` nie jest natywnie dostępne w PowerShellu z którego korzystam na maszynie klienckiej. Wobec powyższego zdecydowałem się skopiować go ręcznie wykorzystując program `nano`. Szczegóły:
+⚠️ Podczas próby kopiowania klucza publicznego na serwer napotkałem na problem - komenda `ssh-copy-id` nie jest natywnie dostępne w PowerShell'u z którego korzystam na maszynie klienckiej. Wobec powyższego zdecydowałem się skopiować go ręcznie wykorzystując program `nano`. Szczegóły:
 
 > [docs/troubleshooting.md](docs/troubleshooting.md)
 
@@ -179,14 +179,28 @@ Dzisiejszym celem było skonfigurowanie urządzenia brzegowego (router TP-Link T
 
 Dodatkowo postanowiłem, że zarówno serwer jak i maszyna kliencka będą połączone z TL-WR844N, dzięki czemu uzyskam bezpieczne odizolowane środowisko testowe.
 
-Gdy problem został rozwiązany, postanowiłem dodatkowo oczyścić plik `~/.ssh/known_hosts` z nieaktualej zawartości. 
+Gdy problem został rozwiązany, postanowiłem dodatkowo oczyścić plik `~/.ssh/known_hosts` z nieaktualnej zawartości. 
 
 Czego się nauczyłem:
 
-- Konflikty DHCP: Doświadczyłem w praktyce, że zmiana konfiguracji DHCP po stronie routera wymaga odświeżenia dzierżawy co najszybciej osiągnałem poprzez reboot serwera. Przekonałem się o tym gdy mimo ustawienia dzierżawy nie mogłem ustanowić połączenia przez SSH.
+- Konflikty DHCP: Doświadczyłem w praktyce, że zmiana konfiguracji DHCP po stronie routera wymaga odświeżenia dzierżawy co najszybciej osiągnąłem poprzez reboot serwera. Przekonałem się o tym gdy mimo ustawienia dzierżawy nie mogłem ustanowić połączenia przez SSH.
 
 - Zarządzanie plikiem `known_hosts`: Dowiedziałem się, że czyszczenie nieaktualnych wpisów tożsamości serwerów to dobra praktyka pozwalająca utrzymać higienę pracy gdy serwer zmienia swoją konfigurację sieciową.
 
+**🏁Podsmumowanie Etapu 1:**
+
+
+	[x] Wirtualizacja: Poprawna konfiguracja VM w trybie Bridged Adapter.
+
+	[x] Zarządzanie pakietami: Umiejętność bezpiecznej aktualizacji systemu (update vs upgrade).
+
+	[x] Sieć: Stabilizacja środowiska przez DHCP Reservation na routerze fizycznym.
+
+	[x] Dostęp zdalny: Konfiguracja OpenSSH z kluczami ED25519.
+	
+	[x] Hardening: Wyłączenie logowania hasłem i zabezpieczenie plików .ssh (chmod 600).
+
+	[x] Troubleshooting: Rozwiązywanie problemów z fingerprintami (known_hosts) i formatowaniem kluczy.
 ---
 
 ## 📅 Etap 2 – Nginx, Użytkownicy i Firewall
