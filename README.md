@@ -59,7 +59,7 @@ Postawiłem własny serwer Ubuntu Server 22.04 LTS w VirtualBox
 │       ├── ssh-bez-hasla.png
 │       ├── dhcp-reservation.png
 │       ├── nginx-strona-glowna.png
-│       ├── nginx-wlasna-strona.png
+│       ├── nginx-wlasna-strona-logi.png
 │       ├── ufw-status.png
 │       ├── ls-uprawnienia.png
 │       ├── ssh-hardening-blad-hasla.png
@@ -190,17 +190,17 @@ Czego się nauczyłem:
 **🏁Podsmumowanie Etapu 1:**
 
 
-	[x] Wirtualizacja: Poprawna konfiguracja VM w trybie Bridged Adapter.
+[x] Wirtualizacja: Poprawna konfiguracja VM w trybie Bridged Adapter.
 
-	[x] Zarządzanie pakietami: Umiejętność bezpiecznej aktualizacji systemu (update vs upgrade).
+[x] Zarządzanie pakietami: Umiejętność bezpiecznej aktualizacji systemu (update vs upgrade).
 
-	[x] Sieć: Stabilizacja środowiska przez DHCP Reservation na routerze fizycznym.
+[x] Sieć: Stabilizacja środowiska przez DHCP Reservation na routerze fizycznym.
 
-	[x] Dostęp zdalny: Konfiguracja OpenSSH z kluczami ED25519.
+[x] Dostęp zdalny: Konfiguracja OpenSSH z kluczami ED25519.
 	
-	[x] Hardening: Wyłączenie logowania hasłem i zabezpieczenie plików .ssh (chmod 600).
+[x] Hardening: Wyłączenie logowania hasłem i zabezpieczenie plików .ssh (chmod 600).
 
-	[x] Troubleshooting: Rozwiązywanie problemów z fingerprintami (known_hosts) i formatowaniem kluczy.
+[x] Troubleshooting: Rozwiązywanie problemów z fingerprintami (known_hosts) i formatowaniem kluczy.
 ---
 
 ## 📅 Etap 2 – Nginx, Użytkownicy i Firewall
@@ -231,8 +231,75 @@ Czego się nauczyłem:
 
 ---
 
+Dzień 7 – Zarządzanie treścią, Systemd Deep Dive i Logi LIVE
 
 
+Po instalacji Nginxa przeszedłem do pełnej kontroli nad serwowaną treścią i diagnostyką usługi. Skonfigurowałem własny "Document Root", spersonalizowałem stronę główną i nauczyłem się monitorować ruch sieciowy w czasie rzeczywistym.
+
+
+>[docs/screenshots/nginx-wlasna-strona-logi.png](docs/screenshots/nginx-wlasna-strona-logi.png)
+
+Weryfikacja: Po lewej spersonalizowana strona index.html. Po prawej monitoring logów dostępu (access.log) na żywo. Widoczna korelacja między odświeżeniem strony a nowymi wpisami (statusy 200, 304 oraz ślad po błędzie 403 z testów).
+
+
+
+
+Kluczowe osiągnięcia:
+
+- Personalizacja CLI: Wykorzystałem edytor nano do modyfikacji pliku `/var/www/html/index.nginx-debian.html`. Zrozumiałem, dlaczego niezbędne są uprawnienia sudo (właścicielem katalogu jest root).
+
+- Analiza cyklu życia usługi: Przetestowałem różnicę między restart a reload oraz sprawdziłem mechanizm autostartu poprzez disable/enable.
+
+- Monitoring: Zamieniłem podstawowe komendy na bardziej profesjonalne narzędzia: `ss -tln` do audytu portów oraz `journalctl` do logów systemowych.
+
+
+
+Czego się nauczyłem:
+
+- Document Root: To katalog, z którego Nginx serwuje pliki. Domyślnie /var/www/html/. Brak pliku indeksu skutkuje błędem 403 Forbidden (brak uprawnień do listowania zawartości folderu).
+
+- Mechanizm Cache: Doświadczyłem sytuacji, w której zmiany w HTML nie były widoczne mimo poprawnej edycji. Diagnoza: pamięć podręczna przeglądarki (klienta), a nie błąd serwera.
+
+
+Interpretacja Logów: Nauczyłem się czytać strukturę access.log. Rozróżniam statusy:
+
+- 200: OK – plik wysłany poprawnie.
+
+- 304: Not Modified – przeglądarka użyła własnej kopii (cache).
+
+- 404: Not Found – brakujący plik (np. favicon.ico).
+
+- 403: Forbidden – próba dostępu do folderu bez pliku index.
+
+
+
+Komendy użyte w tym etapie:
+
+`sudo nano /var/www/html/index.nginx-debian.html` – edycja treści strony.
+
+`sudo systemctl reload nginx` – przeładowanie konfiguracji bez przerywania połączeń.
+
+`ss -tln | grep :80` – sprawdzenie, czy serwer nasłuchuje na porcie HTTP.
+
+`tail -f -n 5 /var/log/nginx/access.log` – śledzenie ruchu na serwerze w czasie rzeczywistym (5 najnowszych linijek pliku).
+
+`journalctl -u nginx --since "5 minutes ago"` – szybka diagnostyka ostatnich zdarzeń usługi.
+
+
+
+
+Napotkane problemy i rozwiązania:
+
+- Problem: Brak widocznych zmian po edycji HTML.
+
+Rozwiązanie: Wyczyszczenie pamięci podręcznej przeglądarki (cache) lub otwarcie strony w trybie incognito.
+
+- Problem: Błąd 403 po zmianie nazwy pliku na .bak.
+
+Rozwiązanie: Nginx nie znalazł pliku zdefiniowanego w index i zablokował próbę wyświetlenia listy plików w katalogu ze względów bezpieczeństwa.
+
+
+---
 
 
 
