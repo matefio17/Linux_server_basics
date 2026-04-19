@@ -190,17 +190,17 @@ Czego się nauczyłem:
 **🏁Podsmumowanie Etapu 1:**
 
 
-[x] Wirtualizacja: Poprawna konfiguracja VM w trybie Bridged Adapter.
+ - Wirtualizacja: Poprawna konfiguracja VM w trybie Bridged Adapter.
 
-[x] Zarządzanie pakietami: Umiejętność bezpiecznej aktualizacji systemu (update vs upgrade).
+ - Zarządzanie pakietami: Umiejętność bezpiecznej aktualizacji systemu (update vs upgrade).
 
-[x] Sieć: Stabilizacja środowiska przez DHCP Reservation na routerze fizycznym.
+ - Sieć: Stabilizacja środowiska przez DHCP Reservation na routerze fizycznym.
 
-[x] Dostęp zdalny: Konfiguracja OpenSSH z kluczami ED25519.
+ - Dostęp zdalny: Konfiguracja OpenSSH z kluczami ED25519.
 	
-[x] Hardening: Wyłączenie logowania hasłem i zabezpieczenie plików .ssh (chmod 600).
+ - Hardening: Wyłączenie logowania hasłem i zabezpieczenie plików .ssh (chmod 600).
 
-[x] Troubleshooting: Rozwiązywanie problemów z fingerprintami (known_hosts) i formatowaniem kluczy.
+ - Troubleshooting: Rozwiązywanie problemów z fingerprintami (known_hosts) i formatowaniem kluczy.
 ---
 
 ## 📅 Etap 2 – Nginx, Użytkownicy i Firewall
@@ -301,6 +301,37 @@ Rozwiązanie: Nginx nie znalazł pliku zdefiniowanego w index i zablokował pró
 
 ---
 
+Dzień 8 – – Architektura użytkowników i bezpieczeństwo haseł
+
+
+Zgłębiłem mechanizmy zarządzania użytkownikami i grupami w systemie Linux. Zrozumiałem proces uwierzytelniania, strukturę przechowywania haseł oraz różnice w implementacji narzędzi do tworzenia kont.
+
+Kluczowe osiągnięcia:
+
+- Analiza plików systemowych: Rozbiłem strukturę `/etc/passwd` oraz `/etc/shadow`. Zidentyfikowałem użyte algorytmy hashowania: `$6$` (SHA-512) dla starszych kont oraz $y$ (yescrypt) dla nowo tworzonych.
+
+- Troubleshooting logowania: Przeprowadziłem symulację blokady konta poprzez zmianę shella na `/bin/false`. Przeanalizowałem logi systemowe (`journalctl`), co pozwoliło mi zaobserwować natychmiastowe zamykanie sesji po udanym uwierzytelnieniu.
+
+- Polityka haseł: Wykorzystałem narzędzie `chage` do wymuszenia zmiany hasła przy następnym logowaniu (ustawienie daty ostatniej zmiany na dzień 0).
+
+- Zarządzanie grupami: Stworzyłem nową strukturę grup (`groupadd`) i przydzieliłem uprawnienia administracyjne (`sudoers`) poprzez modyfikację przynależności do grup dodatkowych.
+
+Czego się nauczyłem:
+
+- `adduser` vs `useradd`: Dowiedziałem się, że `adduser` to skrypt (wrapper), który automatyzuje tworzenie katalogów domowych i kopiowanie plików z `/etc/skel`. `useradd` to narzędzie niskopoziomowe, które bez dodatkowych flag tworzy "suche" konto bez środowiska pracy.
+
+Kontekst sesji (`su -`): Zrozumiałem, że flaga - w poleceniu su jest krytyczna dla ładowania zmiennych środowiskowych (PATH, HOME). Bez niej użytkownik pracuje w "pożyczonym" kontekście, co może powodować błędy w działaniu skryptów i programów.
+
+
+Najważniejsze komendy:
+
+- `sudo adduser <user>` – interaktywne tworzenie kompletnego konta.
+
+- `sudo chage -d 0 <user>` – wymuszenie natychmiastowej zmiany hasła.
+
+- `sudo usermod -aG sudo <user>` – dodawanie użytkownika do grupy uprawnień administracyjnych (append to group).
+
+- `su - <user>` – przełączanie na użytkownika z pełnym ładowaniem jego profilu.
 
 
 
