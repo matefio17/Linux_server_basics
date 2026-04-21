@@ -60,6 +60,7 @@ Postawiłem własny serwer Ubuntu Server 22.04 LTS w VirtualBox
 │       ├── dhcp-reservation.png
 │       ├── nginx-strona-glowna.png
 │       ├── nginx-wlasna-strona-logi.png
+│       ├── user-sudo-rules
 │       ├── ufw-status.png
 │       ├── ls-uprawnienia.png
 │       ├── ssh-hardening-blad-hasla.png
@@ -301,7 +302,7 @@ Rozwiązanie: Nginx nie znalazł pliku zdefiniowanego w index i zablokował pró
 
 ---
 
-Dzień 8 – – Architektura użytkowników i bezpieczeństwo haseł
+Dzień 8 – Architektura użytkowników i bezpieczeństwo haseł
 
 
 Zgłębiłem mechanizmy zarządzania użytkownikami i grupami w systemie Linux. Zrozumiałem proces uwierzytelniania, strukturę przechowywania haseł oraz różnice w implementacji narzędzi do tworzenia kont.
@@ -333,7 +334,73 @@ Najważniejsze komendy:
 
 - `su - <user>` – przełączanie na użytkownika z pełnym ładowaniem jego profilu.
 
+---
 
+Dzień 9 – Eskalacja uprawnień i zasada Least Privilege
+
+Opis:
+Skoncentrowałem się na bezpieczeństwie dostępu do zasobów systemowych. Przeszedłem od ogólnego nadawania uprawnień administracyjnych do precyzyjnego zarządzania dostępem za pomocą mechanizmu `sudoers`.
+
+Kluczowe osiągnięcia:
+
+- Granularne Sudo: Skonfigurowałem precyzyjną regułę w `visudo`, ograniczając uprawnienia użytkownika jankowalski wyłącznie do restartu usługi Nginx bez konieczności podawania hasła (NOPASSWD).
+
+>[docs/screenshots/user-sudo-rules.png](docs/screenshots/user-sudo-rules.png)
+
+- Analiza hierarchii uprawnień: Zdiagnozowałem konflikt, w którym przynależność do grupy `%sudo` nadpisywała moje restrykcyjne reguły. Rozwiązałem to poprzez zmianę logiki przyznawania uprawnień – rezygnację z grup na rzecz jawnych wpisów dla użytkowników.
+
+- Badanie składni `visudo`: Zrozumiałem strukturę wpisu Użytkownik HOST=(Jako_Kto:Jako_Grupa) Komenda. Dowiedziałem się, jak kluczowe jest podawanie pełnych ścieżek do binariów (ustalonych za pomocą `whereis`).
+
+Czego się nauczyłem:
+
+- Zasada Najmniejszych Uprawnień: Zrozumiałem, że w profesjonalnym środowisku nie nadaje się pełnego roota każdemu pracownikowi. Każdy powinien mieć tylko tyle mocy, ile wymaga jego rola (np. Junior Dev tylko do restartu serwera).
+
+- Bezpieczeństwo edycji (visudo): Poznałem narzędzie `visudo`, które chroni przed zapisaniem błędnej składni w pliku `/etc/sudoers`. Błąd w tym pliku mógłby trwale zablokować dostęp administracyjny do serwera.
+
+- Logika "Top-to-Bottom": Plik `sudoers` jest czytany od góry do dołu, co oznacza, że reguły umieszczone niżej mogą nadpisać te wcześniejsze.
+
+Najważniejsze komendy:
+
+`sudo visudo` – bezpieczne narzędzie do edycji uprawnień sudo.
+
+`whereis systemctl` – lokalizacja ścieżki do pliku wykonywalnego.
+
+`sudo usermod -aG sudo <user>` – dodanie do grupy (append).
+
+---
+
+Dzień 10 – Chirurgia uprawnień rwx i własność plików (Ownership)
+
+Opis:
+Przeszedłem do praktycznego zarządzania dostępem do plików i katalogów. Zrozumiałem, jak system operacyjny decyduje o tym, kto może czytać, edytować lub uruchamiać dane zasoby, oraz jak te uprawnienia korelują z usługami takimi jak Nginx.
+
+Kluczowe osiągnięcia:
+
+- Zarządzanie Własnością (`chown`): Przejąłem rekursywnie (-R) katalog `/var/www/html/` na własność swojego głównego użytkownika. Pozwoliło mi to na swobodną edycję treści strony WWW bez konieczności ciągłego używania sudo, co jest bezpieczniejszą praktyką.
+
+- Analiza procesów (Nginx Context): Zidentyfikowałem, że proces główny Nginxa (master) działa jako root, ale procesy robocze (workers) działają jako użytkownik www-data. Zrozumiałem, że jest to kluczowe zabezpieczenie – w razie włamania przez lukę w stronie, napastnik przejmuje uprawnienia tylko tego ograniczonego konta.
+
+- Eksperyment 403 Forbidden: Celowo odebrałem wszystkie uprawnienia do pliku index.nginx-debian.html (`chmod 000`). Potwierdziłem, że skutkuje to błędem 403 i namierzyłem odpowiedni wpis w logach `/var/log/nginx/access.log`.
+
+Czego się nauczyłem:
+
+- Matryca rwx: Opanowałem zapis numeryczny (np. 755, 644) oraz symboliczny (np. u+x, g-w).
+
+- Znaczenie bitu wykonania (x) dla katalogów: Odkryłem, że uprawnienie r (odczyt) pozwala tylko zobaczyć listę plików, ale to uprawnienie x (wykonanie) pozwala "wejść" do katalogu (cd) i pracować na jego zawartości.
+
+- Zasada Najmniejszych Uprawnień w praktyce: Zrozumiałem, dlaczego pliki tekstowe powinny mieć 644, a katalogi 755 – daje to niezbędny dostęp dla usług (Nginx), jednocześnie blokując możliwość nieautoryzowanej edycji.
+
+Najważniejsze komendy:
+
+`sudo chown -R user:group folder/` – rekursywna zmiana właściciela i grupy.
+
+`chmod 644 <plik>` – standardowe uprawnienia dla plików (RW dla właściciela, R dla reszty).
+
+`chmod 755 <katalog>` – standardowe uprawnienia dla folderów (wymagany bit X do nawigacji).
+
+`ls -la` – szczegółowy podgląd maski uprawnień i właściciela.
+
+---
 
 ## 📅 Etap 3 – Scenariusze Helpdesk
  
