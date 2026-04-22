@@ -415,7 +415,11 @@ Najważniejsze komendy:
 ## 🚀 Wnioski i co dalej
 
 
+
 ## 📚 Zasoby które były pomocne
+
+W projekcie kierowałem się materiałami z sylabusa **LPI Linux Essentials** – korzystam z dostępnych **darmowych materiałów edukacyjnych udostępnianych przez LPI**, które pomagają mi poznawać tematy związane z administracją Linux, bezpieczeństwem, siecią i zarządzaniem systemem w sposób uporządkowany. Dzięki temu projekt jest zgodny ze standardowym podejściem do nauki Linux'a, a jednocześnie pozwala mi budować własne praktyczne portfolio na podstawie wymagań sylabusa.
+
 
 
 ## **👨‍💻** Autor
