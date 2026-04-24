@@ -207,7 +207,7 @@ Kiedy wystąpił:
 Podczas audytu zabezpieczeń sieciowych i testowania reakcji serwera na polecenie ping.
 
 Przyczyna:
-Brak odświeżenia konfiguracji firewalla w pamięci operacyjnej systemu. Firewall stanowy (UFW) po edycji plików tekstowych takich jak /etc/ufw/before.rules nie wczytuje ich automatycznie.
+Brak odświeżenia konfiguracji firewalla w pamięci operacyjnej systemu. Firewall (UFW) po edycji plików tekstowych takich jak /etc/ufw/before.rules nie wczytuje ich automatycznie.
 
 Rozwiązanie:
 
@@ -231,11 +231,11 @@ Usługa OpenSSH była zainstalowana, ale nie posiadała flagi enabled w systemd.
 
 Rozwiązanie:
 
-Audyt stanu usług za pomocą sudo systemctl status ssh.
+Audyt stanu usług za pomocą `sudo systemctl status ssh`.
 
-Użycie komendy sudo systemctl enable ssh.
+Użycie komendy `sudo systemctl enable ssh`.
 
-Weryfikacja: Restart serwera (sudo reboot) i pomyślne nawiązanie nowej sesji SSH bez ingerencji manualnej.
+Weryfikacja: Restart serwera (`sudo reboot`) i pomyślne nawiązanie nowej sesji SSH bez ingerencji manualnej.
 
 Wniosek:
 Status active informuje tylko o tym, co dzieje się "tu i teraz". Dobry administrator zawsze sprawdza status enabled, aby upewnić się, że infrastruktura podniesie się sama po awarii zasilania lub planowej konserwacji.
@@ -251,9 +251,9 @@ Dodawanie reguł "jedna na drugą" stworzyło nieczytelną listę, w której nie
 
 Rozwiązanie:
 
-Wyświetlenie przejrzystej listy reguł z indeksami: sudo ufw status numbered.
+Wyświetlenie przejrzystej listy reguł z indeksami: `sudo ufw status numbered`.
 
-Precyzyjne usunięcie zbędnych pozycji komendą sudo ufw delete [numer_id].
+Precyzyjne usunięcie zbędnych pozycji komendą `sudo ufw delete [numer_id]`.
 
 Weryfikacja: Ponowne sprawdzenie statusu i potwierdzenie minimalnej, niezbędnej liczby reguł.
 
@@ -273,7 +273,7 @@ Rozwiązanie:
 
 Usunięcie standardowej reguły akceptującej port 22.
 
-Wdrożenie reguły sudo ufw limit ssh.
+Wdrożenie reguły `sudo ufw limit ssh`.
 
 Weryfikacja: Automatyczne blokowanie adresów IP wykonujących więcej niż 6 prób połączenia w ciągu 30 sekund.
 
@@ -295,7 +295,7 @@ Niezarządzalna sieć akademicka. Brak uprawnień administratora do utworzenia r
   1.  Wdrożenie własnego routera TP-Link TL-WR844N.
   2.  Konfiguracja trybu WISP (Wireless ISP) w celu pobierania internetu z Wi-Fi akademickiego i udostępniania go w odizolowanej sieci LAN.
   3.  Konfiguracja DHCP Reservation: powiązanie MAC adresu VM ze stałym IP `192.168.0.105`.
-  4.  Higiena bezpieczeństwa: Wyczyszczenie nieaktualnych wpisów w ~/.ssh/known_hosts
+  4.  Higiena bezpieczeństwa: Wyczyszczenie nieaktualnych wpisów w `~/.ssh/known_hosts`
   5.  Weryfikacja: ponowne uruchomienie VM i potwierdzenie, że adres IP pozostaje stały oraz połączenie SSH działa bez zmian.
      
 **Wniosek:**
