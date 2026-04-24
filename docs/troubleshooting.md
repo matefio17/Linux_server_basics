@@ -202,6 +202,87 @@
 
 ---
 
+## Problem: Zmiany w blokowaniu odpowiedzi na Ping (ICMP) nie wchodzą w życie mimo edycji plików konfiguracyjnych.
+Kiedy wystąpił:
+Podczas audytu zabezpieczeń sieciowych i testowania reakcji serwera na polecenie ping.
+
+Przyczyna:
+Brak odświeżenia konfiguracji firewalla w pamięci operacyjnej systemu. Firewall stanowy (UFW) po edycji plików tekstowych takich jak /etc/ufw/before.rules nie wczytuje ich automatycznie.
+
+Rozwiązanie:
+
+Lokalizacja i edycja sekcji ICMP w pliku /etc/ufw/before.rules.
+
+Zastosowanie komendy sudo ufw reload.
+
+Weryfikacja: Wykonanie testu ping z maszyny zewnętrznej i potwierdzenie braku odpowiedzi (Request timed out).
+
+Wniosek:
+Zmiana plików konfiguracyjnych na dysku to tylko połowa sukcesu. W administracji Linuxem kluczowe jest zrozumienie, że większość usług wymaga sygnału (reload/restart), aby przeładować nowe parametry do działającej pamięci RAM.
+
+
+
+## Problem: Ryzyko utraty dostępu do serwera po restarcie systemu (Cold Boot).
+Kiedy wystąpił:
+Podczas planowania testu trwałości usług (Persistence Test) przed wykonaniem komendy reboot.
+
+Przyczyna:
+Usługa OpenSSH była zainstalowana, ale nie posiadała flagi enabled w systemd. Oznacza to, że proces działał w bieżącej sesji, ale nie został dodany do skryptów startowych systemu.
+
+Rozwiązanie:
+
+Audyt stanu usług za pomocą sudo systemctl status ssh.
+
+Użycie komendy sudo systemctl enable ssh.
+
+Weryfikacja: Restart serwera (sudo reboot) i pomyślne nawiązanie nowej sesji SSH bez ingerencji manualnej.
+
+Wniosek:
+Status active informuje tylko o tym, co dzieje się "tu i teraz". Dobry administrator zawsze sprawdza status enabled, aby upewnić się, że infrastruktura podniesie się sama po awarii zasilania lub planowej konserwacji.
+
+
+
+## Problem: Nadmiarowość i konflikty w regułach firewalla po testach konfiguracyjnych.
+Kiedy wystąpił:
+Podczas czyszczenia konfiguracji po wielokrotnym dodawaniu różnych wariantów dostępu do portów HTTP i HTTPS.
+
+Przyczyna:
+Dodawanie reguł "jedna na drugą" stworzyło nieczytelną listę, w której niektóre wpisy były zdublowane lub niepotrzebnie szerokie (np. pojedynczy port 80 obok profilu Nginx Full).
+
+Rozwiązanie:
+
+Wyświetlenie przejrzystej listy reguł z indeksami: sudo ufw status numbered.
+
+Precyzyjne usunięcie zbędnych pozycji komendą sudo ufw delete [numer_id].
+
+Weryfikacja: Ponowne sprawdzenie statusu i potwierdzenie minimalnej, niezbędnej liczby reguł.
+
+Wniosek:
+Zasada "Keep It Simple" (KISS) dotyczy również firewalla. Im mniej reguł, tym łatwiejszy audyt bezpieczeństwa i mniejsza szansa na przeoczenie luki w pancerzu sieciowym.
+
+
+
+## Problem: Masowe próby logowania botów do usługi SSH i zaśmiecanie logów systemowych.
+Kiedy wystąpił:
+Podczas analizy logów bezpieczeństwa i monitorowania prób nieautoryzowanego dostępu.
+
+Przyczyna:
+Standardowe ustawienie allow dla portu 22 pozwala na nielimitowaną liczbę prób połączeń, co ułatwia ataki typu Brute Force i generuje zbędny ruch.
+
+Rozwiązanie:
+
+Usunięcie standardowej reguły akceptującej port 22.
+
+Wdrożenie reguły sudo ufw limit ssh.
+
+Weryfikacja: Automatyczne blokowanie adresów IP wykonujących więcej niż 6 prób połączenia w ciągu 30 sekund.
+
+Wniosek:
+Zabezpieczenie to nie tylko blokowanie, ale też inteligentne limitowanie. Reguła limit to pierwsza linia obrony, która chroni nie tylko przed włamanie, ale też przed atakami typu Denial of Service (DoS) wycelowanymi w usługę logowania.
+
+
+
+
 ### Problem: Serwer traci dostępność pod dotychczasowym adresem IP po restarcie usługi sieciowej lub odświeżeniu dzierżawy DHCP przez router nadrzędny (akademicki).
 
 **Kiedy wystąpił:**

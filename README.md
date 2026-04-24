@@ -402,6 +402,48 @@ Najważniejsze komendy:
 
 ---
 
+Dzień 11 – Sieciowy Pancerz (UFW) i Test Trwałości (Persistence)
+
+Opis:
+Dopełniłem bezpieczeństwo serwera poprzez konfigurację firewalla (UFW) oraz zweryfikowałem stabilność i autostart usług po całkowitym restarcie systemu.
+
+>[docs/screenshots/ufw-status.png](docs/screenshots/ufw-status.png)
+
+Kluczowe osiągnięcia:
+
+- Implementacja UFW: Skonfigurowałem reguły dla HTTP/HTTPS (Nginx Full) oraz SSH.
+
+- Ochrona Brute-Force: Zamiast zwykłego otwarcia portu, zastosowałem regułę limit dla SSH. Ogranicza ona liczbę prób połączeń (6 prób na 30 sekund), co chroni system przed zasypywaniem logów przez boty i oszczędza zasoby serwera.
+
+- Chirurgia pliku `before.rules`: Przeprowadziłem test blokowania odpowiedzi na ping (ICMP). Zrozumiałem, że niskopoziomowe reguły wymagają edycji plików konfiguracyjnych i przeładowania firewalla (reload), aby zmiany weszły w życie.
+
+- Audyt logów: Włączyłem logowanie UFW i przetestowałem je "na żywo" używając `tail -f /var/log/ufw.log`, próbując połączyć się przez telnet na zamknięty port (23).
+
+- Gwarancja Trwałości: Wykryłem, że usługa SSH była ustawiona jako disabled. Naprawiłem to za pomocą systemctl enable, zapobiegając utracie dostępu do serwera po restarcie.
+
+
+Czego się nauczyłem:
+
+- Firewall: Dowiedziałem się, że UFW śledzi nawiązane połączenia, dzięki czemu aktywacja firewalla nie przerywa bieżącej sesji administratora.
+
+- Zarządzanie Usługami: Opanowałem różnicę między status active (usługa działa teraz) a status enabled (usługa zadziała po restarcie).
+
+- Profile Aplikacji: Zrozumiałem, że używanie profili takich jak Nginx Full jest bezpieczniejsze i wygodniejsze niż ręczne otwieranie pojedynczych portów.
+
+Najważniejsze komendy:
+
+`sudo ufw limit ssh` – inteligentne ograniczanie prób logowania.
+
+`sudo ufw status verbose` – rozszerzony podgląd stanu zabezpieczeń.
+
+`sudo ufw reload` - przeładowanie firewalla tak aby zmiany w plikach konfiguracyjnych zaczęły działać
+
+`sudo systemctl enable [service]` – zapewnienie autostartu kluczowych usług.
+
+`tail -f /var/log/ufw.log` – monitorowanie zablokowanych pakietów w czasie rzeczywistym.
+
+
+
 ## 📅 Etap 3 – Scenariusze Helpdesk
  
 **Cel:** Symulacja realnych problemów — metodyczne diagnozowanie i naprawianie.
