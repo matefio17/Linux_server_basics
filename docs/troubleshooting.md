@@ -304,51 +304,25 @@ Stosowanie stałej konfiguracji IP w przypadku serwerów, zwłaszcza tych które
 
 ---
 
-### Problem: [krótki opis]
+## Problem: Skrypt w harmonogramie Cron nie uruchamia się co minutę zgodnie z założeniem.
+Kiedy wystąpił:
+Podczas weryfikacji logów po pierwszej konfiguracji `crontab -e`.
 
-**Kiedy wystąpił:**
-**Komunikat błędu:**
-```
+Przyczyna:
+Błędna interpretacja składni czasu. Ustawienie 1 * * * * zamiast * * * * * spowodowało, że system planował uruchomienie skryptu tylko raz na godzinę (dokładnie w pierwszej minucie każdej godziny), zamiast co 60 sekund.
 
-```
-**Przyczyna:**
+Rozwiązanie:
 
-**Rozwiązanie:**
-```bash
+Otwarcie edytora zadań: `crontab -e`.
 
-```
-**Wniosek:**
+Korekta pierwszej gwiazdki na *, co oznacza "w każdej minucie".
 
+Poprawa ścieżki na bezwzględną (absolutną), aby Cron zawsze wiedział, gdzie znajduje się plik wykonywalny, niezależnie od bieżącego kontekstu.
+
+Weryfikacja: Obserwacja pliku logów i potwierdzenie nowych wpisów co minutę.
+
+Wniosek:
+Cron jest niezwykle precyzyjny, ale nie wybacza błędów w składni. W zadaniach automatyzacji kluczowe jest stosowanie pełnych ścieżek dostępu (np. `/home/user/...` zamiast `~/...`), ponieważ procesy systemowe często działają w innym środowisku (`PATH`) niż zalogowany użytkownik.
 ---
 
-### Problem: [krótki opis]
 
-**Kiedy wystąpił:**
-**Komunikat błędu:**
-```
-
-```
-**Przyczyna:**
-
-**Rozwiązanie:**
-```bash
-
-```
-**Wniosek:**
-
----
-
-*Dodawaj nowe wpisy powyżej tej linii w miarę napotykania problemów.*
-
----
-
-## Wzorzec diagnostyczny którego używam
-
-```
-1. Co widzi użytkownik?          → opis symptomu
-2. Czy usługa działa?            → systemctl status [usługa]
-3. Co mówią logi?                → journalctl / tail /var/log/...
-4. Czy sieć/firewall nie blokuje → ufw status, ss -tlnp
-5. Czy uprawnienia są właściwe?  → ls -la [plik]
-6. Czy jest miejsce na dysku?    → df -h
-```

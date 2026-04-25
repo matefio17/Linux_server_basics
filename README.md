@@ -33,7 +33,6 @@ Postawiłem własny serwer Ubuntu Server 22.04 LTS w VirtualBox
 | Firewall | UFW (iptables) | Ograniczenie ruchu sieciowego |
 | Zarządzanie usługami | systemd | Kontrola i monitoring usług |
 | Automatyzacja | crontab | Zadania cykliczne |
-| Bezpieczeństwo | fail2ban | Ochrona przed brute-force |
 | Dokumentacja | Git + GitHub | Kontrola wersji i portfolio |
  
 ---
@@ -49,8 +48,7 @@ Postawiłem własny serwer Ubuntu Server 22.04 LTS w VirtualBox
 │   ├── sshd_config              # Konfiguracja serwera SSH (oczyszczona)
 │   └── ufw_rules.txt            # Zrzut aktywnych reguł firewalla
 ├── scripts/
-│   ├── log_date.sh              # Skrypt uruchamiany przez crontab
-│   └── setup_user.sh            # Skrypt dodający użytkownika z sudo
+│   └── log_date.sh              # Skrypt uruchamiany przez crontab
 ├── docs/
 │   ├── troubleshooting.md       # Udokumentowane scenariusze helpdesk
 │   └── screenshots/
@@ -63,6 +61,7 @@ Postawiłem własny serwer Ubuntu Server 22.04 LTS w VirtualBox
 │       ├── user-sudo-rules
 │       ├── ufw-status.png
 │       ├── ls-uprawnienia.png
+│       ├── dzialanie-skryptu.png
 │       ├── ssh-hardening-blad-hasla.png
 │       ├── scenariusz-nginx-stopped.png
 │       ├── scenariusz-nginx-naprawiony.png
@@ -338,6 +337,8 @@ Najważniejsze komendy:
 
 Dzień 9 – Eskalacja uprawnień i zasada Least Privilege
 
+
+
 Opis:
 Skoncentrowałem się na bezpieczeństwie dostępu do zasobów systemowych. Przeszedłem od ogólnego nadawania uprawnień administracyjnych do precyzyjnego zarządzania dostępem za pomocą mechanizmu `sudoers`.
 
@@ -373,6 +374,9 @@ Dzień 10 – Chirurgia uprawnień rwx i własność plików (Ownership)
 
 Opis:
 Przeszedłem do praktycznego zarządzania dostępem do plików i katalogów. Zrozumiałem, jak system operacyjny decyduje o tym, kto może czytać, edytować lub uruchamiać dane zasoby, oraz jak te uprawnienia korelują z usługami takimi jak Nginx.
+
+
+> [docs/screenshots/ls-uprawnienia.png](docs/screenshots/ls-uprawnienia.png)
 
 Kluczowe osiągnięcia:
 
@@ -442,7 +446,40 @@ Najważniejsze komendy:
 
 `tail -f /var/log/ufw.log` – monitorowanie zablokowanych pakietów w czasie rzeczywistym.
 
+---
 
+Dzień 12 – Pierwsze kroki w Bash i harmonogram zadań Cron
+
+Opis:
+Rozpocząłem proces automatyzacji powtarzalnych czynności na serwerze. Stworzyłem skrypt monitorujący aktywność systemu oraz skonfigurowałem harmonogram zadań, aby odciążyć administratora od ręcznego uruchamiania procesów.
+
+> [docs/screenshots/dzialanie-skryptu.png](docs/screenshots/dzialanie-skryptu.png)
+
+Kluczowe osiągnięcia:
+
+Tworzenie skryptu `log_date.sh`: Napisałem skrypt, który w sposób inteligentny zarządza strukturą plików. Skrypt sprawdza obecność katalogu na logi, a w przypadku jego braku – automatycznie go tworzy i inicjuje plik tekstowy.
+
+Logika warunkowa: Zastosowałem instrukcję `if [ -d "$LOG_DIR" ]`, aby uniknąć błędów podczas próby zapisu do nieistniejących lokalizacji.
+
+Automatyzacja przez Cron: Wdrożyłem skrypt do harmonogramu zadań systemu Linux (crontab). Skrypt wykonuje się automatycznie w tle, bez ingerencji użytkownika.
+
+Czego się nauczyłem:
+
+Shebang (`#!/bin/bash`): Zrozumiałem, że ta linia informuje system, jakiego interpretera ma użyć do przetworzenia komend w pliku.
+
+Przekierowania strumieni: Wykorzystałem operator `>>`, aby dopisywać dane na końcu pliku (append) zamiast ich nadpisywania.
+
+Składnia Crontab: Opanowałem strukturę pięciu gwiazdek (* * * * *). Zrozumiałem różnicę między specyficznym momentem (np. 1 * * * * – pierwsza minuta godziny) a interwałem (np. co minutę).
+
+Najważniejsze komendy:
+
+`chmod +x log_date.sh` – nadanie uprawnień wykonywalności dla skryptu.
+
+`crontab -e` – edycja tabeli zadań cyklicznych dla bieżącego użytkownika.
+
+`tail -f ~/projekt/logs/activity.log` – śledzenie dopisywanych logów w czasie rzeczywistym.
+
+---
 
 ## 📅 Etap 3 – Scenariusze Helpdesk
  
