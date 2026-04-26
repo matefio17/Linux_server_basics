@@ -2,6 +2,64 @@
 
 # 🐧 Projekt: Linux Server Basics (Ubuntu Server 22.04) - samodzielna nauka administracji Linux.
 
+
+## 🚀 TL;DR
+
+Projekt przedstawia konfigurację i utrzymanie serwera Linux (Ubuntu 22.04) w środowisku labowym.
+
+Zakres:
+- SSH (klucze, hardening)
+- Nginx (deployment + troubleshooting)
+- UFW (firewall + security)
+- systemd (zarządzanie usługami)
+- Cron (automatyzacja)
+- realne scenariusze awarii (SSH, 403, nginx fail)
+
+Projekt skupia się na DIAGNOSTYCE i ROZWIĄZYWANIU problemów.
+
+
+## 🧠 Wykazane umiejętności
+- Administracja systemami Linux (Ubuntu Server)
+- Podstawy sieci komputerowych (DHCP, adresacja IP, porty, SSH)
+- Zarządzanie usługami (systemd)
+- Konfiguracja serwerów WWW (Nginx)
+- Konfiguracja zapory sieciowej (UFW)
+- Rozwiązywanie problemów i analiza logów (Troubleshooting)
+- Zarządzanie użytkownikami i uprawnieniami
+- Skryptowanie w Bashu i automatyzacja (cron)
+
+
+## 🏗️ Architektura
+
+```mermaid
+graph TD
+
+    A[Laptop (SSH Client)]
+    B[Router TP-Link TL-WR844N]
+    C[Ubuntu Server 22.04 (VirtualBox VM)]
+
+    A -->|SSH (port 22)| B
+    B -->|LAN 192.168.0.0/24| C
+
+    subgraph Server Services
+        D[OpenSSH]
+        E[Nginx (port 80)]
+        F[UFW Firewall]
+        G[systemd]
+        H[Cron Jobs]
+    end
+
+    C --> D
+    C --> E
+    C --> F
+    C --> G
+    C --> H
+
+    E -->|serves| I[HTML Page]
+```
+
+
+
 ## 📋 Spis treści
  
 - [Problem](#-problem)
@@ -62,13 +120,14 @@ Postawiłem własny serwer Ubuntu Server 22.04 LTS w VirtualBox
 │       ├── ufw-status.png
 │       ├── ls-uprawnienia.png
 │       ├── dzialanie-skryptu.png
-│       ├── ssh-hardening-blad-hasla.png
 │       ├── scenariusz-nginx-stopped.png
 │       ├── scenariusz-nginx-naprawiony.png
 │       ├── scenariusz-403-blad.png
 │       ├── scenariusz-403-naprawiony.png
-│       ├── ssh-timeout.png
-│       └── ssh-refused.png
+│       ├── scenariusz-ssh-timeout.png
+│       ├── scenariusz-ssh-timeout-naprawiony.png
+│       ├── scenariusz-ssh-refused.png
+│       └── scenariusz-ssh-refused-naprawiony.png
 └── LICENSE
 ```
 
@@ -484,15 +543,12 @@ Najważniejsze komendy:
 ## 📅 Etap 3 – Scenariusze Helpdesk
  
 **Cel:** Symulacja realnych problemów — metodyczne diagnozowanie i naprawianie.
+
+Opis:
+Ten etap to symulacja realnych problemów, z którymi mierzy się Administrator Systemów lub Inżynier Wsparcia. Zamiast podążać za instrukcją, celowo wprowadzałem awarie w konfiguracji, a następnie diagnozowałem je przy użyciu profesjonalnych narzędzi analizy logów i statusów usług.
+
  
 > Pełna dokumentacja wszystkich scenariuszy: [docs/troubleshooting.md](docs/troubleshooting.md)
-
-
-## 🔄 Co zrobiłbym inaczej
-
-
-## 🚀 Wnioski i co dalej
-
 
 
 ## 📚 Zasoby które były pomocne
@@ -503,6 +559,5 @@ W projekcie kierowałem się materiałami z sylabusa **LPI Linux Essentials** �
 
 ## **👨‍💻** Autor
 
----
 
 **Mateusz Markiewicz -** Projekt zrealizowany w ramach praktycznej nauki i stanowi część portfolio

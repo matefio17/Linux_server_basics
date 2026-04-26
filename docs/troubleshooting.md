@@ -1,198 +1,92 @@
 # 🔧 Troubleshooting Log
 
-> Format każdego wpisu: **Problem → Środowisko → Analiza → Rozwiązanie → Wniosek**
+> Format każdego wpisu: **Problem → Przyczyna → Rozwiązanie → Weryfikacja → Wniosek**
 > Opis analizy jest ważniejszy niż samo rozwiązanie — pokazuje jak myślę, nie tylko co wpisałem.
 
 ---
 
-## Spis treści
 
-- [Scenariusz 1 – Usługa nie działa](#scenariusz-1--usługa-nie-działa)
-- [Scenariusz 2 – Błąd 403 Forbidden](#scenariusz-2--błąd-403-forbidden)
-- [Scenariusz 3 – Pełny dysk](#scenariusz-3--pełny-dysk)
-- [Scenariusz 4 – Problem z SSH](#scenariusz-4--problem-z-ssh)
-- [Problemy napotkane przy okazji](#problemy-napotkane-przy-okazji)
+## Problem: Usługa Nginx nie uruchamia się (Status: Failed) po zmianach w konfiguracji.
+Kiedy wystąpił:
+Podczas próby przeładowania serwera WWW po edycji parametrów nasłuchiwania.
 
----
+>[docs/screenshots/scenariusz-nginx-stopped.png](docs/screenshots/scenariusz-nginx-stopped.png)
 
-## Scenariusz 1 – Usługa nie działa
+Przyczyna:
+Błąd składni w pliku konfiguracyjnym (literówka w dyrektywie), który uniemożliwił binariom Nginxa poprawne sparsowanie ustawień podczas startu.
 
-**Data:**
-**Czas rozwiązania:**
+Rozwiązanie:
 
-### Problem
-<!-- Co nie działało? Co widać było w przeglądarce lub terminalu? -->
+Użycie `sudo systemctl status nginx` w celu potwierdzenia, że usługa jest nieaktywna.
 
+Wykonanie testu składni: `sudo nginx -t` (kluczowe narzędzie, które wskazało konkretną linię i plik z błędem).
 
+Poprawa błędu w edytorze `nano`.
 
-### Środowisko
-<!-- Usługa, system, sposób dostępu -->
+Weryfikacja: Ponowny test `nginx -t` zakończony statusem syntax is ok, a następnie `sudo systemctl start nginx`.
 
+>[docs/screenshots/scenariusz-nginx-naprawiony.png](docs/screenshots/scenariusz-nginx-naprawiony.png)
 
+Wniosek:
+Nigdy nie restartuj usługi "w ciemno". Narzędzia do testowania konfiguracji (takie jak `nginx -t`) są pierwszą linią obrony przed nieplanowanym przestojem serwera (downtime).
 
-### Analiza
-<!-- Jakie komendy uruchomiłeś? Co znalazłeś w logach? Co Cię naprowadziło na przyczynę? -->
+## Problem: Błąd "403 Forbidden" przy próbie wejścia na stronę WWW.
+Kiedy wystąpił:
+Po zmianie struktury katalogów lub restrykcyjnej modyfikacji uprawnień do plików źródłowych.
 
-```bash
-# komendy których użyłem do diagnozy
-```
+>[docs/screenshots/scenariusz-403-blad.png](docs/screenshots/scenariusz-403-blad.png)
 
-```
-# output który był kluczowy
-```
+Przyczyna:
+Brak uprawnień odczytu (r) dla użytkownika systemowego www-data (pod którym działa Nginx) do pliku index.nginx-debian.html lub brak uprawnień wykonania (x) do katalogu nadrzędnego.
 
-**Co mnie naprowadziło na przyczynę:**
+Rozwiązanie:
 
+Analiza logów błędów: `tail -f /var/log/nginx/error.log` (wykryto wpis: Permission denied).
 
-### Rozwiązanie
+Audyt uprawnień: `ls -la /var/www/html`.
 
-```bash
-# komenda która naprawiła problem
-```
+Nadanie poprawnych uprawnień: `chmod 644 index.html`.
 
-**Weryfikacja:**
-```bash
-# jak sprawdziłem że działa
-```
+Weryfikacja: Odświeżenie przeglądarki i poprawne wyświetlenie treści strony.
 
-### Wniosek
-<!-- Jednym-dwoma zdaniami: czego Cię nauczył ten scenariusz? -->
+>[docs/screenshots/scenariusz-403-naprawiony.png](docs/screenshots/scenariusz-403-naprawiony.png)
 
+Wniosek:
+Błąd 403 to najczęściej problem na styku warstwy aplikacji i systemu plików. Kluczowe jest zrozumienie, że usługa WWW musi mieć fizyczną możliwość "dotknięcia" plików, które ma serwować.
 
 
----
+## Problem: Brak możliwości połączenia przez SSH (Connection Refused vs Timeout).
+Kiedy wystąpił:
+Podczas prób zdalnego logowania do serwera po pracach konserwacyjnych.
 
-## Scenariusz 2 – Błąd 403 Forbidden
+Przyczyna:
 
-**Data:**
-**Czas rozwiązania:**
 
-### Problem
+W przypadku Timeout: Połączenie "zgubione" lub zablokowane.
 
 
+>[docs/screenshots/scenariusz-ssh-timeout.png](docs/screenshots/scenariusz-ssh-timeout.png)
 
-### Środowisko
 
+W przypadku Refused: usługa SSH (sshd) nie działa lub nie nasłuchuje na danym porcie.
 
+>[docs/screenshots/scenariusz-ssh-refused.png](docs/screenshots/scenariusz-ssh-refused.png)
 
-### Analiza
+Rozwiązanie:
 
-```bash
-# komendy których użyłem do diagnozy
-```
+Dla Refused: Lokalny dostęp do konsoli i komenda `sudo systemctl start ssh`.
 
-```
-# output który był kluczowy
-```
+>[docs/screenshots/scenariusz-ssh-refused-naprawiony.png](docs/screenshots/scenariusz-ssh-refused-naprawiony.png)
 
-**Co mnie naprowadziło na przyczynę:**
+Dla Timeout: Sprawdzenie stanu firewalla: sudo ufw status. Jeśli port 22 był zablokowany – sudo ufw allow ssh.
 
+>[docs/screenshots/scenariusz-ssh-timeout-naprawiony.png](docs/screenshots/scenariusz-ssh-timeout-naprawiony.png)
 
-### Rozwiązanie
 
-```bash
+Weryfikacja: Pomyślne logowanie przez SSH.
 
-```
-
-**Weryfikacja:**
-```bash
-
-```
-
-### Wniosek
-
-
-
----
-
-## Scenariusz 3 – Pełny dysk
-
-**Data:**
-**Czas rozwiązania:**
-
-### Problem
-
-
-
-### Środowisko
-
-
-
-### Analiza
-
-```bash
-
-```
-
-```
-
-```
-
-**Co mnie naprowadziło na przyczynę:**
-
-
-### Rozwiązanie
-
-```bash
-
-```
-
-**Weryfikacja:**
-```bash
-
-```
-
-### Wniosek
-
-
-
----
-
-## Scenariusz 4 – Problem z SSH
-
-**Data:**
-**Czas rozwiązania:**
-
-### Problem
-
-
-
-### Środowisko
-
-
-
-### Analiza — błąd pierwszy
-
-```bash
-
-```
-
-```
-
-```
-
-### Analiza — błąd drugi
-
-```bash
-
-```
-
-```
-
-```
-
-**Różnica między oboma błędami i co każdy oznaczał:**
-
-
-### Rozwiązanie
-
-```bash
-
-```
-
-### Wniosek
-
-
+Wniosek:
+Umiejętność rozróżnienia błędu "Refused" (aplikacja leży) od "Timeout" (sieć/firewall blokuje) skraca czas diagnostyki o połowę. Pozwala natychmiast określić, czy szukać problemu w usługach, czy w regułach bezpieczeństwa.
 
 ---
 
@@ -221,7 +115,6 @@ Wniosek:
 Zmiana plików konfiguracyjnych na dysku to tylko połowa sukcesu. W administracji Linuxem kluczowe jest zrozumienie, że większość usług wymaga sygnału (reload/restart), aby przeładować nowe parametry do działającej pamięci RAM.
 
 
-
 ## Problem: Ryzyko utraty dostępu do serwera po restarcie systemu (Cold Boot).
 Kiedy wystąpił:
 Podczas planowania testu trwałości usług (Persistence Test) przed wykonaniem komendy reboot.
@@ -239,7 +132,6 @@ Weryfikacja: Restart serwera (`sudo reboot`) i pomyślne nawiązanie nowej sesji
 
 Wniosek:
 Status active informuje tylko o tym, co dzieje się "tu i teraz". Dobry administrator zawsze sprawdza status enabled, aby upewnić się, że infrastruktura podniesie się sama po awarii zasilania lub planowej konserwacji.
-
 
 
 ## Problem: Nadmiarowość i konflikty w regułach firewalla po testach konfiguracyjnych.
