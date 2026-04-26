@@ -31,32 +31,42 @@ Projekt skupia się na DIAGNOSTYCE i ROZWIĄZYWANIU problemów.
 
 ## 🏗️ Architektura
 
-```mermaid
 graph TD
-
-    A[Laptop (SSH Client)]
-    B[Router TP-Link TL-WR844N]
-    C[Ubuntu Server 22.04 (VirtualBox VM)]
-
-    A -->|SSH (port 22)| B
-    B -->|LAN 192.168.0.0/24| C
-
-    subgraph Server Services
-        D[OpenSSH]
-        E[Nginx (port 80)]
-        F[UFW Firewall]
-        G[systemd]
-        H[Cron Jobs]
+    %% Nodes
+    Laptop["💻 Laptop (SSH Client)"]
+    Router["📟 Router (TP-Link)<br/>192.168.0.1"]
+    
+    subgraph VirtualBox_Host["Host (Twoja Maszyna)"]
+        Server["🐧 Ubuntu Server 22.04<br/>IP: 192.168.0.105"]
     end
 
-    C --> D
-    C --> E
-    C --> F
-    C --> G
-    C --> H
+    subgraph Security_Layer["Warstwa Bezpieczeństwa"]
+        UFW["🛡️ UFW Firewall<br/>(Ports: 22, 80, 443)"]
+        SSH_Hard["🔑 SSH Hardening<br/>(Keys Only)"]
+    end
 
-    E -->|serves| I[HTML Page]
-```
+    subgraph Services["Usługi i Automatyzacja"]
+        Nginx["🌐 Nginx Web Server"]
+        Cron["⏰ Cron Jobs"]
+        Logs["📁 Log Management<br/>(/var/log/)"]
+    end
+
+    %% Connections
+    Laptop -->|WiFi / LAN| Router
+    Router -->|Static DHCP Reservation| Server
+    
+    Server --> UFW
+    UFW --> SSH_Hard
+    UFW --> Nginx
+    
+    Nginx --> Logs
+    Cron -->|Daily Scripts| Logs
+    
+    %% Styling
+    style Server fill:#f9f,stroke:#333,stroke-width:2px
+    style Security_Layer fill:#e1f5fe,stroke:#01579b
+    style Services fill:#fff3e0,stroke:#ffb300
+
 
 
 
