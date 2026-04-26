@@ -10,7 +10,7 @@
 Kiedy wystąpił:
 Podczas próby przeładowania serwera WWW po edycji parametrów nasłuchiwania.
 
->[docs/screenshots/scenariusz-nginx-stopped.png](docs/screenshots/scenariusz-nginx-stopped.png)
+>[screenshots/scenariusz-nginx-stopped.png](screenshots/scenariusz-nginx-stopped.png)
 
 Przyczyna:
 Błąd składni w pliku konfiguracyjnym (literówka w dyrektywie), który uniemożliwił binariom Nginxa poprawne sparsowanie ustawień podczas startu.
@@ -25,7 +25,7 @@ Poprawa błędu w edytorze `nano`.
 
 Weryfikacja: Ponowny test `nginx -t` zakończony statusem syntax is ok, a następnie `sudo systemctl start nginx`.
 
->[docs/screenshots/scenariusz-nginx-naprawiony.png](docs/screenshots/scenariusz-nginx-naprawiony.png)
+>[screenshots/scenariusz-nginx-naprawiony.png](screenshots/scenariusz-nginx-naprawiony.png)
 
 Wniosek:
 Nigdy nie restartuj usługi "w ciemno". Narzędzia do testowania konfiguracji (takie jak `nginx -t`) są pierwszą linią obrony przed nieplanowanym przestojem serwera (downtime).
@@ -34,7 +34,7 @@ Nigdy nie restartuj usługi "w ciemno". Narzędzia do testowania konfiguracji (t
 Kiedy wystąpił:
 Po zmianie struktury katalogów lub restrykcyjnej modyfikacji uprawnień do plików źródłowych.
 
->[docs/screenshots/scenariusz-403-blad.png](docs/screenshots/scenariusz-403-blad.png)
+>[screenshots/scenariusz-403-blad.png](screenshots/scenariusz-403-blad.png)
 
 Przyczyna:
 Brak uprawnień odczytu (r) dla użytkownika systemowego www-data (pod którym działa Nginx) do pliku index.nginx-debian.html lub brak uprawnień wykonania (x) do katalogu nadrzędnego.
@@ -49,7 +49,7 @@ Nadanie poprawnych uprawnień: `chmod 644 index.html`.
 
 Weryfikacja: Odświeżenie przeglądarki i poprawne wyświetlenie treści strony.
 
->[docs/screenshots/scenariusz-403-naprawiony.png](docs/screenshots/scenariusz-403-naprawiony.png)
+>[screenshots/scenariusz-403-naprawiony.png](screenshots/scenariusz-403-naprawiony.png)
 
 Wniosek:
 Błąd 403 to najczęściej problem na styku warstwy aplikacji i systemu plików. Kluczowe jest zrozumienie, że usługa WWW musi mieć fizyczną możliwość "dotknięcia" plików, które ma serwować.
@@ -65,22 +65,22 @@ Przyczyna:
 W przypadku Timeout: Połączenie "zgubione" lub zablokowane.
 
 
->[docs/screenshots/scenariusz-ssh-timeout.png](docs/screenshots/scenariusz-ssh-timeout.png)
+>[screenshots/scenariusz-ssh-timeout.png](screenshots/scenariusz-ssh-timeout.png)
 
 
 W przypadku Refused: usługa SSH (sshd) nie działa lub nie nasłuchuje na danym porcie.
 
->[docs/screenshots/scenariusz-ssh-refused.png](docs/screenshots/scenariusz-ssh-refused.png)
+>[screenshots/scenariusz-ssh-refused.png](screenshots/scenariusz-ssh-refused.png)
 
 Rozwiązanie:
 
 Dla Refused: Lokalny dostęp do konsoli i komenda `sudo systemctl start ssh`.
 
->[docs/screenshots/scenariusz-ssh-refused-naprawiony.png](docs/screenshots/scenariusz-ssh-refused-naprawiony.png)
+>[screenshots/scenariusz-ssh-refused-naprawiony.png](screenshots/scenariusz-ssh-refused-naprawiony.png)
 
 Dla Timeout: Sprawdzenie stanu firewalla: sudo ufw status. Jeśli port 22 był zablokowany – sudo ufw allow ssh.
 
->[docs/screenshots/scenariusz-ssh-timeout-naprawiony.png](docs/screenshots/scenariusz-ssh-timeout-naprawiony.png)
+>[screenshots/scenariusz-ssh-timeout-naprawiony.png](screenshots/scenariusz-ssh-timeout-naprawiony.png)
 
 
 Weryfikacja: Pomyślne logowanie przez SSH.
