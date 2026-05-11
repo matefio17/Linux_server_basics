@@ -33,29 +33,40 @@ Projekt skupia się na DIAGNOSTYCE i ROZWIĄZYWANIU problemów.
 
 ```mermaid
 graph TD
+    %% Definicje urządzeń
+    Laptop[Laptop: SSH Client]
+    Router{Router: TP-Link TL-WR844N}
+    Server[Ubuntu Server 22.04]
+    
+    %% Sieć
+    Laptop -->|SSH port 22| Router
+    Router -->|IP: 192.168.0.105| Server
 
-    A[Laptop (SSH Client)]
-    B[Router TP-Link TL-WR844N]
-    C[Ubuntu Server 22.04 (VirtualBox VM)]
+    %% Logika serwera
+    subgraph VM_Internal [VirtualBox VM Environment]
+        direction TB
+        
+        subgraph Services [System Services]
+            D[OpenSSH]
+            E[Nginx: Port 80]
+            F[UFW Firewall]
+            G[systemd]
+            H[Cron Jobs]
+        end
 
-    A -->|SSH (port 22)| B
-    B -->|LAN 192.168.0.0/24| C
-
-    subgraph Server Services
-        D[OpenSSH]
-        E[Nginx (port 80)]
-        F[UFW Firewall]
-        G[systemd]
-        H[Cron Jobs]
+        subgraph Scripts [Folder: /home/matefio17/scripts]
+            S1[provisioning.sh]
+            S2[log-date.sh]
+        end
     end
 
-    C --> D
-    C --> E
-    C --> F
-    C --> G
-    C --> H
-
-    E -->|serves| I[HTML Page]
+    %% Relacje między komponentami
+    Server --> D
+    Server --> Scripts
+    
+    H -.->|automatyczne wywołanie| S2
+    S1 -.->|sudoers config| E
+    E -->|public_html| Web[HTML Static Page]
 ```
 
 
