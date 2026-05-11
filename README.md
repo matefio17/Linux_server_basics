@@ -106,6 +106,7 @@ Postawiłem własny serwer Ubuntu Server 22.04 LTS w VirtualBox
 │   ├── sshd_config              # Konfiguracja serwera SSH (oczyszczona)
 │   └── ufw_rules.txt            # Zrzut aktywnych reguł firewalla
 ├── scripts/
+│   ├── provisioning.sh          # Skrypt tworzący użytkownika z określonymi uprawnieniami sudo 
 │   └── log_date.sh              # Skrypt uruchamiany przez crontab
 ├── docs/
 │   ├── troubleshooting.md       # Udokumentowane scenariusze helpdesk
